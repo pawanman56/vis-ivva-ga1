@@ -20,6 +20,10 @@ import BarChartItem from './BarChartItem.vue'
     mounted() {
       const width = 500;
       const height = 300;
+      const marginTop = 20;
+      const marginRight = 20;
+      const marginBottom = 20;
+      const marginLeft = 40;
       const data = [
         { date: "24-Apr-07", amount: 93.24 },
         { date: "25-Apr-07", amount: 95.35 },
@@ -42,13 +46,13 @@ import BarChartItem from './BarChartItem.vue'
       const parseTime = d3.utcParse("%d-%b-%y");
 
       const x = d3
-        .scaleTime()
+        .scaleUtc()
         .domain(
           d3.extent(data, function (d) {
             return parseTime(d.date);
           })
         )
-        .rangeRound([0, width]);
+        .rangeRound([marginLeft, width - marginRight]);
 
       const y = d3
         .scaleLinear()
@@ -57,7 +61,7 @@ import BarChartItem from './BarChartItem.vue'
             return d.amount;
           })
         )
-        .rangeRound([height, 0]);
+        .rangeRound([height - marginBottom, marginTop]);
 
       const line = d3
         .line()
@@ -69,10 +73,11 @@ import BarChartItem from './BarChartItem.vue'
         });
       
       g.append("g")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", `translate(0, ${height - marginBottom})`)
         .call(d3.axisBottom(x));
 
       g.append("g")
+        .attr("transform", `translate(${marginLeft}, 0)`)
         .call(d3.axisLeft(y))
         .append("text")
         .attr("fill", "#000")
