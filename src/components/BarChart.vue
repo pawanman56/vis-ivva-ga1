@@ -11,6 +11,7 @@ import BarChartItem from './BarChartItem.vue'
 
 <script>
   import * as d3 from 'd3'
+  import sourceCodeData from '../assets/source_code_data.json'
 
   export default {
     data() {
@@ -18,81 +19,58 @@ import BarChartItem from './BarChartItem.vue'
     },
 
     mounted() {
-      const width = 500;
-      const height = 300;
+      const width = 600;
+      const height = 400;
       const marginTop = 20;
       const marginRight = 20;
       const marginBottom = 20;
       const marginLeft = 40;
-      const data = [
-        { date: "24-Apr-07", amount: 93.24 },
-        { date: "25-Apr-07", amount: 95.35 },
-        { date: "26-Apr-07", amount: 98.84 },
-        { date: "27-Apr-07", amount: 99.92 },
-        { date: "30-Apr-07", amount: 99.8 },
-        { date: "1-May-07", amount: 99.47 },
-        { date: "2-May-07", amount: 100.39 },
-        { date: "3-May-07", amount: 100.4 },
-        { date: "4-May-07", amount: 100.81 },
-        { date: "7-May-07", amount: 103.92 },
-        { date: "8-May-07", amount: 105.06 },
-        { date: "9-May-07", amount: 106.88 },
-        { date: "10-May-07", amount: 107.34 },
-      ];
 
-      const svg = d3.select("svg").attr("width", width).attr("height", height);
+      const data = sourceCodeData.data;
+
+      const svg = d3.select("svg")
+        .attr("viewBox", [0, 0, width, height])
+        .attr("style", `
+          max-width: ${width}px;
+          height: auto;
+          font: 10px sans-serif;
+          overflow: visible;
+        `);
       const g = svg.append("g");
+      
+      const x = d3.scaleBand()
+        .domain(data.map(d => d.filename))
+        .range([marginLeft, width - marginRight])
+        .padding(0.2);
 
-      const parseTime = d3.utcParse("%d-%b-%y");
+      const xAxis = d3.axisBottom(x).tickSizeOuter(0);
 
-      const x = d3
-        .scaleUtc()
+      const y = d3.scaleLinear()
         .domain(
-          d3.extent(data, function (d) {
-            return parseTime(d.date);
-          })
-        )
-        .rangeRound([marginLeft, width - marginRight]);
-
-      const y = d3
-        .scaleLinear()
-        .domain(
-          d3.extent(data, function (d) {
-            return d.amount;
-          })
-        )
+          d3.extent(data, d => d.lines.length)
+        ).nice()
         .rangeRound([height - marginBottom, marginTop]);
-
-      const line = d3
-        .line()
-        .x(function (d) {
-          return x(parseTime(d.date));
-        })
-        .y(function (d) {
-          return y(d.amount);
-        });
+      
+      const yAxis = d3.axisLeft(y).tickSizeOuter(0);
       
       g.append("g")
         .attr("transform", `translate(0, ${height - marginBottom})`)
-        .call(d3.axisBottom(x));
+        .call(xAxis);
 
       g.append("g")
         .attr("transform", `translate(${marginLeft}, 0)`)
-        .call(d3.axisLeft(y))
-        .append("text")
-        .attr("fill", "#000")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", "0.71em")
-        .attr("text-anchor", "end")
-        .text("Price ($)");
+        .call(yAxis);
 
-      g.append("path")
-        .datum(data)
-        .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("stroke-width", 1.5)
-        .attr("d", line);
+      g.append("g")
+        .attr("fill", "steelblue")
+        .selectAll("rect")
+        .data(data)
+        .join("rect")
+          .style("mix-blend-mode", "multiply")
+          .attr("x", d => x(d.filename))
+          .attr("y", d => y(d.lines.length))
+          .attr("height", d => y(0) - y(d.lines.length))
+          .attr("width", x.bandwidth());
     }
   }
 </script>
