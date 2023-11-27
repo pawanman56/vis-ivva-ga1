@@ -1,12 +1,12 @@
 <script setup>
-import BarChartItem from './BarChartItem.vue'
+import ChartItem from './ChartItem.vue'
 </script>
 
 <template>
-  <BarChartItem>
-    <template #heading>Bar chart with 'File Name' and 'Total Line of Codes'</template>
+  <ChartItem>
+    <template #heading>'File Name' vs. 'Total Line of Codes'</template>
     <svg></svg>
-  </BarChartItem>
+  </ChartItem>
 </template>
 
 <script>

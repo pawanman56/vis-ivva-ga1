@@ -1,8 +1,9 @@
+<script setup>
+import ScatterPlot from '../components/ScatterPlot.vue'
+</script>
 
 <template>
   <main>
-    <div>
-      <p>Scatter Plot</p>
-    </div>
+    <ScatterPlot />
   </main>
 </template>

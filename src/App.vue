@@ -37,7 +37,6 @@ nav a.router-link-exact-active {
   color: hsla(160, 100%, 37%, 1);
   text-decoration: none;
   transition: 0.4s;
-  border-left: 1px solid var(--color-border);
 }
 
 nav a.router-link-exact-active:hover {
@@ -74,6 +73,10 @@ nav a {
 
     padding: 1rem 0;
     margin-top: 1rem;
+  }
+
+  nav a.router-link-exact-active {
+    border-left: 1px solid var(--color-border);
   }
 }
 </style>
