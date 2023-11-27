@@ -34,7 +34,10 @@ nav {
 }
 
 nav a.router-link-exact-active {
-  color: var(--color-text);
+  color: hsla(160, 100%, 37%, 1);
+  text-decoration: none;
+  transition: 0.4s;
+  border-left: 1px solid var(--color-border);
 }
 
 nav a.router-link-exact-active:hover {
@@ -44,11 +47,7 @@ nav a.router-link-exact-active:hover {
 nav a {
   display: inline-block;
   padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
+  border-left: 1px solid transparent;
 }
 
 @media (min-width: 1024px) {

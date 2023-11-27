@@ -4,7 +4,7 @@ import BarChartItem from './BarChartItem.vue'
 
 <template>
   <BarChartItem>
-    <template #heading>Bar Chart</template>
+    <template #heading>Bar chart with 'File Name' and 'Total Line of Codes'</template>
     <svg></svg>
   </BarChartItem>
 </template>
@@ -37,6 +37,13 @@ import BarChartItem from './BarChartItem.vue'
           overflow: visible;
         `);
       const g = svg.append("g");
+
+      const randomHexColorCode = () => {
+        let n = (Math.random() * 0xfffff * 1000000).toString(16);
+        return '#' + n.slice(0, 6);
+      };
+
+      data.forEach(d => d.fillColor = randomHexColorCode());
       
       const x = d3.scaleBand()
         .domain(data.map(d => d.filename))
@@ -70,7 +77,8 @@ import BarChartItem from './BarChartItem.vue'
           .attr("x", d => x(d.filename))
           .attr("y", d => y(d.lines.length))
           .attr("height", d => y(0) - y(d.lines.length))
-          .attr("width", x.bandwidth());
+          .attr("width", x.bandwidth())
+          .attr("fill", d => d.fillColor);
     }
   }
 </script>
